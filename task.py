@@ -12,7 +12,6 @@ def read_input(file_name):
 
 def generate_output(prompt, text):
   openai_prompt = prompt + text
-  print(openai_prompt)
   response = client.chat.completions.create(model="gpt-4o-mini", messages=[{"role": "user", "content": openai_prompt}])
 
   return response.choices[0].message.content
@@ -26,23 +25,21 @@ def write_output(output):
         file.write(html)
 
 task_prompt = """
-  Zadanie:
-  Stwórz podstawową strukturę HTML dla artykułu, która będzie czytelna i semantyczna.
-  
-  Priorytetyzuj:
-  Semantykę - użyj odpowiednich tagów do podziału tekstu np. <section>, <article>, <footer>, <h1>, <h2>, <p>.
-  Kompletność - upewnij się, że struktura zawiera całość artykułu i nie ma dodatkowej treści.
+Zadanie:
+Najpierw znajdź i popraw błędnie zapisane polskie znaki w tekście artykułu. Na podstawie tego tekstu stwórz strukturę HTML dla artykułu, która będzie czytelna i semantyczna.
 
-  Dodatkowe instrukcje:
-  Popraw polskie znaki w tekście.
-  Najkrótsze linie z tekstu to tagi <h1> lub <h2> i każdy z nich ma swoją sekcję. Nie dodawaj innych sekcji poza nimi.
-  W <footer> powinien być tylko jeden tag <p> zawierający ostatnią linijkę tekstu zaczynającą się od znaku '*'.
-  Do każdej sekcji wstaw <img src="placeholder.png"> pasujące do tematu sekcji. Opis w atrybucie alt powinien być szczegółowy i precyzyjny, aby mógł służyć jako prompt do generowania grafiki.
+Priorytetyzuj:
+Semantykę - użyj odpowiednich tagów do podziału tekstu np. <section>, <article>, <footer>, <h1>, <h2>, <p>.
+Kompletność - struktura MUSI zawierać całość artykułu i nie powinna mieć dodatkowej treści.
 
-  Oczekiwany wynik:
-  Kod HTML, który będzie zawierał tylko zawartość pomiędzy tagu <body>, ale bez niego. Pomiń JavaScript i CSS.
+Dodatkowe instrukcje:
+Najkrótsze linie z tekstu to tagi <h1> lub <h2> i każdy z nich ma swoją sekcję. Nie dodawaj innych sekcji poza nimi. Jedna sekcja może mieć kilka tagów <p>.
+Do każdej sekcji wstaw <img src="placeholder.png"> pasujące do tematu sekcji. Opis w atrybucie alt powinien być szczegółowy i precyzyjny, aby mógł służyć jako prompt do generowania grafiki.
 
-  Artykuł:
+Oczekiwany wynik:
+Kod HTML, który będzie zawierał tylko zawartość pomiędzy tagu <body>, ale bez niego. Pomiń JavaScript i CSS.
+
+Artykuł:
 """
 task_text = read_input('input.txt')
 
