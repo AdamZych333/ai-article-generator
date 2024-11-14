@@ -1,5 +1,6 @@
 from openai import OpenAI
 from dotenv import load_dotenv
+import re
 
 load_dotenv()
 client = OpenAI()
@@ -16,8 +17,18 @@ def generate_output(prompt, text):
 
   return response.choices[0].message.content
 
+def write_output(output):
+    pattern = r"```html\n(.*?)\n```"
+    matches = re.findall(pattern, output, re.DOTALL)
+    html = matches[0]
+
+    with open('public/artykul.html', 'w') as file:
+        file.write(html)
+
 task_prompt = """
+  Zadanie:
   Stwórz podstawową strukturę HTML dla artykułu, która będzie czytelna i semantyczna.
+  
   Priorytetyzuj:
   Semantykę - użyj odpowiednich tagów do podziału tekstu np. <section>, <article>, <footer>, <h1>, <h2>, <p>.
   Kompletność - upewnij się, że struktura zawiera całość artykułu i nie ma dodatkowej treści.
@@ -35,5 +46,6 @@ task_prompt = """
 """
 task_text = read_input('input.txt')
 
-output = generate_output(task_prompt, task_text)
-print(output)
+task_output = generate_output(task_prompt, task_text)
+
+write_output(task_output)
